@@ -6,21 +6,21 @@
 
 // Data
 const account1 = {
-  owner: 'Jonas Schmedtmann',
+  owner: 'Jahanzaib Iqbal',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
 };
 
 const account2 = {
-  owner: 'Jessica Davis',
+  owner: 'Zunain Ali',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
   interestRate: 1.5,
   pin: 2222,
 };
 
 const account3 = {
-  owner: 'Steven Thomas Williams',
+  owner: 'Abdul Rehman',
   movements: [200, -200, 340, -300, -20, 50, 400, -460],
   interestRate: 0.7,
   pin: 3333,
@@ -91,15 +91,32 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-function calcPrintBalance(mov){
-  const balance =  mov.reduce(function (acc,current){
-    return acc+current
-  },0)
-  labelBalance.textContent = `${balance} €`
+function calcPrintBalance(mov) {
+  const balance = mov.reduce(function (acc, current) {
+    return acc + current;
+  }, 0);
+  labelBalance.textContent = `${balance} €`;
 }
 
-displayMovements(account1.movements);
-calcPrintBalance(account1.movements)
+const calcDisplaySummary = function (acc) {
+  const deposit = acc.movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+
+  const withdrawal = acc.movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+
+  labelSumIn.textContent = `${deposit}€`;
+  labelSumOut.textContent = `${Math.abs(withdrawal)}€`;
+  //Bank interest 10% of the deposit amount
+  const interest = acc.movements
+    .filter(mov => mov > 0)
+    .map(mov => mov * acc.interestRate/100)
+    .reduce((acc, mov) => acc + mov,0);
+
+  labelSumInterest.textContent = `${interest}€`;
+};
 
 const createUsernames = function (accs) {
   accs.forEach(function (acc, i, accounts) {
@@ -111,31 +128,56 @@ const createUsernames = function (accs) {
       })
       .join('');
 
-    console.log(acc);
+    // console.log(acc);
   });
 };
-
-
 createUsernames(accounts);
+
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault(); //prevent the default behaviour of button, i.e reload the page on clicked
+
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value.toLowerCase()
+  );
+
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // console.log(currentAccount.pin)
+    labelWelcome.innerHTML = `Welcome Back <b>${
+      currentAccount.owner.split(' ')[0]
+    }<b>`;
+    inputLoginPin.value = inputLoginUsername.value = ''
+    inputLoginPin.blur()
+    inputLoginUsername.blur()
+    containerApp.style.opacity = 100;
+    displayMovements(currentAccount.movements);
+    calcDisplaySummary(currentAccount);
+    calcPrintBalance(currentAccount.movements);
+  }
+});
 
 const depositsArray = movements.filter(function (mov) {
   return mov > 0;
 });
 const withdrawalsArray = movements.filter(mov => mov < 0);
 
-console.log(depositsArray);
-console.log(withdrawalsArray);
-
-
-
-
 // find max value
 
-const max = movements.reduce(function(acc,current){
-  if(acc < current) return current  //
-  else  return acc
-},movements[0])
+const max = movements.reduce(function (acc, current) {
+  if (acc < current) return current; //
+  else return acc;
+}, movements[0]);
 
-console.log(max)
+// console.log(max);
 
+const eurToUsd = 1.1;
+// Chaining
+const totalDepositInUsd = movements
+  .filter(mov => mov > 0)
+  .map(mov => mov * eurToUsd)
+  .reduce((acc, mov) => acc + mov, 0);
 
+const firstedposit = movements.find(mov => mov > 0);
+
+const account = accounts.find(acc => acc.owner === 'Zunain Ali');
