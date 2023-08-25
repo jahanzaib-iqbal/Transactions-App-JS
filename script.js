@@ -91,11 +91,11 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html);
   });
 };
-function calcPrintBalance(mov) {
-  const balance = mov.reduce(function (acc, current) {
+function calcPrintBalance(acc) {
+  acc.balance = acc.movements.reduce(function (acc, current) {
     return acc + current;
   }, 0);
-  labelBalance.textContent = `${balance} €`;
+  labelBalance.textContent = `${acc.balance} €`;
 }
 
 const calcDisplaySummary = function (acc) {
@@ -112,8 +112,8 @@ const calcDisplaySummary = function (acc) {
   //Bank interest 10% of the deposit amount
   const interest = acc.movements
     .filter(mov => mov > 0)
-    .map(mov => mov * acc.interestRate/100)
-    .reduce((acc, mov) => acc + mov,0);
+    .map(mov => (mov * acc.interestRate) / 100)
+    .reduce((acc, mov) => acc + mov, 0);
 
   labelSumInterest.textContent = `${interest}€`;
 };
@@ -133,6 +133,12 @@ const createUsernames = function (accs) {
 };
 createUsernames(accounts);
 
+const updateUI = function (acc) {
+  displayMovements(acc.movements);
+  calcDisplaySummary(acc);
+  calcPrintBalance(acc);
+};
+
 let currentAccount;
 
 btnLogin.addEventListener('click', function (e) {
@@ -147,16 +153,85 @@ btnLogin.addEventListener('click', function (e) {
     labelWelcome.innerHTML = `Welcome Back <b>${
       currentAccount.owner.split(' ')[0]
     }<b>`;
-    inputLoginPin.value = inputLoginUsername.value = ''
-    inputLoginPin.blur()
-    inputLoginUsername.blur()
+    inputLoginPin.value = inputLoginUsername.value = '';
+    inputLoginPin.blur();
+    inputLoginUsername.blur();
     containerApp.style.opacity = 100;
-    displayMovements(currentAccount.movements);
-    calcDisplaySummary(currentAccount);
-    calcPrintBalance(currentAccount.movements);
-  }
+    updateUI(currentAccount);
+  } else alert(`Invalid Account`);
 });
 
+// Transfer Amount
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputTransferAmount.value);
+  const reciverAcount = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    currentAccount.balance >= amount &&
+    amount > 0 &&
+    reciverAcount &&
+    reciverAcount?.username !== currentAccount.username
+  ) {
+    reciverAcount.movements.push(amount);
+    currentAccount.movements.push(-amount);
+    updateUI(currentAccount);
+    inputTransferAmount.blur();
+    inputTransferTo.blur();
+
+    console.log(`${amount} transferred to ${reciverAcount.owner}`);
+  } else console.log('Invalaid Transfer');
+});
+      
+// Delete User / Close Account
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    currentAccount.pin === Number(inputClosePin.value)
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === inputCloseUsername.value
+    );
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
+    console.log(`Account ${currentAccount.owner} Closed`);
+  }
+  inputClosePin.value = inputCloseUsername.value = '';
+});
+
+
+
+// Request a loan : only if there is any deposit amount greater or equal than 10% of requested amount
+
+btnLoan.addEventListener('click', function(e){
+  e.preventDefault();
+
+  const reqAmount = Number(inputLoanAmount.value)
+  if(reqAmount>0 && currentAccount.movements.some(mov => mov>= 0.1*reqAmount) ){
+    currentAccount.movements.push(reqAmount)
+
+    updateUI(currentAccount)
+  }
+  else console.log('Loan Denied')
+  inputLoanAmount = ''
+})
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////
 const depositsArray = movements.filter(function (mov) {
   return mov > 0;
 });
