@@ -222,37 +222,3 @@ btnLoan.addEventListener('click', function(e){
   else console.log('Loan Denied')
   inputLoanAmount = ''
 })
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////
-const depositsArray = movements.filter(function (mov) {
-  return mov > 0;
-});
-const withdrawalsArray = movements.filter(mov => mov < 0);
-
-// find max value
-
-const max = movements.reduce(function (acc, current) {
-  if (acc < current) return current; //
-  else return acc;
-}, movements[0]);
-
-// console.log(max);
-
-const eurToUsd = 1.1;
-// Chaining
-const totalDepositInUsd = movements
-  .filter(mov => mov > 0)
-  .map(mov => mov * eurToUsd)
-  .reduce((acc, mov) => acc + mov, 0);
-
-const firstedposit = movements.find(mov => mov > 0);
-
-const account = accounts.find(acc => acc.owner === 'Zunain Ali');
