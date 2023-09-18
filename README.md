@@ -3,11 +3,11 @@ This is a Banklist app in which you keep record of your transactions and it eval
 
 Login to the App by entering the Username and Password given below :
 
-Username         |      Password
-ji               |      1111
-za               |      2222
-ar               |      3333
-ss               |      4444
+Username         |      Password <br>
+ji        =>  1111 <br>
+za  =>  2222 <br>
+ar  =>  3333 <br>
+ss  =>  4444 <br>
 
 
 These Usernames Corresponds to the initials of 4 Users:
