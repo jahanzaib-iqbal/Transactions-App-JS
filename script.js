@@ -159,8 +159,13 @@ btnLogin.addEventListener('click', function (e) {
     containerApp.style.opacity = 100;
     updateUI(currentAccount);
   } else alert(`Invalid Account,
-  Usernames : ja   , za , ar  ,  ss
-  Password  : 1111, 2222, 3333, 4444`);
+  Accounts Information: 
+  Usernames  |  Password | Account Names
+  ----------------------------------------
+      js          1111     Jahanzaib Iqbal
+      za          2222     Zunain Ali
+      ar          3333     Abdul Rehmann
+      ss          4444     Sarah Smith`);
 });
 
 // Transfer Amount
