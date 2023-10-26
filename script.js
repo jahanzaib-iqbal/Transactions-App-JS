@@ -158,7 +158,9 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.blur();
     containerApp.style.opacity = 100;
     updateUI(currentAccount);
-  } else alert(`Invalid Account`);
+  } else alert(`Invalid Account,
+  Usernames : ja   , za , ar  ,  ss
+  Password  : 1111, 2222, 3333, 4444`);
 });
 
 // Transfer Amount
