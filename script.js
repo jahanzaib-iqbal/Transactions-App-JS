@@ -162,7 +162,7 @@ btnLogin.addEventListener('click', function (e) {
   Accounts Information: 
   Usernames  |  Password | Account Names
   ----------------------------------------
-      js          1111     Jahanzaib Iqbal
+      ji          1111     Jahanzaib Iqbal
       za          2222     Zunain Ali
       ar          3333     Abdul Rehmann
       ss          4444     Sarah Smith`);
